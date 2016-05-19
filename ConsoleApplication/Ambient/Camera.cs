@@ -37,20 +37,28 @@ namespace ConsoleApplication
 
         public void cameraRotationXZ1()
         {
+            GL.Rotate(0.5, 0, 1, 0);
+            
+            /*
             angleXZ = angleXZ + 0.01;
             xEye = raio * Math.Sin(angleXZ);
             zEye = raio * Math.Cos(angleXZ);
+            */
         }
 
         public void cameraRotationXZ2()
         {
+            GL.Rotate(-0.5, 0, 1, 0);
+            /*
             angleXZ = angleXZ - 0.01;
             xEye = raio * Math.Sin(angleXZ);
             zEye = raio * Math.Cos(angleXZ);
+            */
         }
 
         public void ZoomIn()
         {
+            GL.Rotate(0.5, 1, 0, 0);
             xEye = 0.99 * xEye;
             yEye = 0.99 * yEye;
             zEye = 0.99 * zEye;
@@ -59,6 +67,7 @@ namespace ConsoleApplication
 
         public void ZoomOut()
         {
+            GL.Rotate(-0.5, 1, 0, 0);
             xEye = 1.01 * xEye;
             yEye = 1.01 * yEye;
             zEye = 1.01 * zEye;
@@ -67,12 +76,13 @@ namespace ConsoleApplication
 
         public void up()
         {
+            GL.Rotate(0.5, 0, 0, 1);
             yEye += 0.5;
         }
 
         public void down()
         {
-            yEye -= 0.5;
+           GL.Rotate(-0.5, 0, 0, 1);
         }
     }
 }

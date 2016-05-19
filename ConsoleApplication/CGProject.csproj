@@ -49,6 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ContentPipe.cs" />
     <Compile Include="Draw\Body.cs" />
     <Compile Include="Ambient\Camera.cs" />
     <Compile Include="Draw\Button.cs" />
@@ -62,6 +63,7 @@
     <Compile Include="Game\ShellGame.cs" />
     <Compile Include="Ambient\Texture.cs" />
     <Compile Include="Game\TicTacToeGame.cs" />
+    <Compile Include="Texture2D.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -69,7 +71,14 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="texture_00016.jpg" />
+    <None Include="Content\line.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Content\tiles.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

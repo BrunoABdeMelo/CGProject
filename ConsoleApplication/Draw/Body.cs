@@ -18,6 +18,9 @@ namespace ConsoleApplication
         public Color sideColor;
         public Color lineColor;
         public int colorNow;
+        Texture2D texture;
+        
+
         
 
         public Body(Color sideColor, Color lineColor)
@@ -27,8 +30,9 @@ namespace ConsoleApplication
             setButtonColors();
             colorNow = 0;
             this.sideColor = sideColor;
-            this.lineColor = lineColor;
-
+            this.lineColor = lineColor;           
+           
+            texture =  ContentPipe.LoadTexture("tiles.jpg");
 
         }
 
@@ -104,13 +108,34 @@ namespace ConsoleApplication
                 var norm = Vector3.Normalize(dir);
 
 
+                /*
+                 * 
+                 *  GL.BindTexture(TextureTarget.Texture2D, texture.ID);
+            GL.Begin(PrimitiveType.Triangles);
+
+            GL.Color3(Color.Red);
+
+            GL.TexCoord2(0, 0);
+            GL.Vertex3(10, 0, 0);
+
+            GL.TexCoord2(1, 0);
+            GL.Vertex3(0, 10, 0);
+
+            GL.TexCoord2(1, 1);
+            GL.Vertex3(0, 0, 10);
+
+            GL.End();
+                 * */
+                GL.BindTexture(TextureTarget.Texture2D, texture.ID);
                 GL.Begin(PrimitiveType.Triangles);
                 GL.Color3(sideColor);
 
                 GL.Normal3(-norm);
-
+                GL.TexCoord2(0, 0);
                 GL.Vertex3(vertex3x, vertex3y, vertex3z);
+                GL.TexCoord2(1, 0);
                 GL.Vertex3(vertex2x, vertex2y, vertex2z);
+                GL.TexCoord2(1, 1);
                 GL.Vertex3(vertex1x, vertex1y, vertex1z);
 
 
@@ -240,6 +265,7 @@ namespace ConsoleApplication
             for (int i = 0; i < result.Length; i = i + 3)
             {
                 result[i] = result.ElementAt(i) - 4.5f;
+                result[i + 1] = result.ElementAt(i + 1) - 2;
                 result[i + 2] = result.ElementAt(i + 2) - 16f;
 
             }

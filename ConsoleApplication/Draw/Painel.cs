@@ -14,14 +14,14 @@ namespace ConsoleApplication
         public Button[] buttons;
         public Color[] colors;
         public Position[] buttonsPosition;
-
+        //Texture2D texture;
 
         public Painel()
         {
             colors = getVectorColor();
             buttonsPosition = getButtonsPosition();
             buttons = new Button[colors.Length];
-
+           // texture = ContentPipe.LoadTexture("line.jpg");
             for (int i = 0; i < colors.Length; i++)
             {
                 buttons[i] = new Button(buttonsPosition.ElementAt(i), 1, colors.ElementAt(i));
@@ -40,13 +40,16 @@ namespace ConsoleApplication
                 double calx, calz;
                 for (double j = 0; j < 10; j += 0.0007)
                 {
-                    GL.Begin(BeginMode.Lines);
+                    //GL.BindTexture(TextureTarget.Texture1D, texture.ID);
+                    GL.LineWidth(2f);
+                    GL.Begin(PrimitiveType.Lines);
                     GL.Color3(buttons[i].color);
                     GL.Normal3(norm);
                     calx = Math.Cos(j) + buttons[i].position.x;
                     calz = Math.Sin(j) + buttons[i].position.z;
-
+                   // GL.TexCoord1(0);
                     GL.Vertex3(buttons[i].position.x, buttons[i].position.y, buttons[i].position.z);
+                  //  GL.TexCoord1(1);
                     GL.Vertex3(calx, buttons[i].position.y, calz);
                     GL.End();
                 }
@@ -78,17 +81,17 @@ namespace ConsoleApplication
 
             Position[] result =
             {
-                new Position(0,4.1,-5),
-                new Position(-2.5,4.1,-2.5),
-                new Position(0,4.1,-2.5),
-                new Position(2.5,4.1,-2.5),
-                new Position(-2.5,4.1,0),
-                new Position(0,4.1,0),
-                new Position(2.5,4.1,0),
-                new Position(-2.5,4.1,2.5),
-                new Position(0,4.1,2.5),
-                new Position(2.5,4.1,2.5),
-                new Position(0,4.1,5),
+                new Position(0,2.1,-5),
+                new Position(-2.5,2.1,-2.5),
+                new Position(0,2.1,-2.5),
+                new Position(2.5,2.1,-2.5),
+                new Position(-2.5,2.1,0),
+                new Position(0,2.1,0),
+                new Position(2.5,2.1,0),
+                new Position(-2.5,2.1,2.5),
+                new Position(0,2.1,2.5),
+                new Position(2.5,2.1,2.5),
+                new Position(0,2.1,5),
 
 
             };
