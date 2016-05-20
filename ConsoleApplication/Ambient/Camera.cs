@@ -33,6 +33,16 @@ namespace ConsoleApplication
             
         }
 
+        public void cameraRotationZA()
+        {
+            GL.Rotate(-0.33, 0, 0, 1);
+        }
+
+        public void cameraRotationZB()
+        {
+            GL.Rotate(0.33, 0, 0, 1);
+        }
+
         public void zoomIn()
         {
             

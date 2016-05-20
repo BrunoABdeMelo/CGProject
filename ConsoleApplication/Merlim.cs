@@ -13,33 +13,29 @@ namespace ConsoleApplication
 
     class Merlim : GameWindow, IPlataform
     {
-        Matrix4 matrixProjection, matrixModelview,cameraMatrix;
+        Matrix4 matrixProjection;
         Body body;
         Painel painel;
-        Light light;
-        
+        Light light;        
         Camera camera;
         ShellGame shellGame;
         TicTacToeGame ticTacToeGame;
         MerlimState merlimState;
 
+        bool updateDraw;
         bool mouseClick;
         bool keyboardCameraMove;
-        int keyboardCountEvent;
+        int numberRotateFrames;
+        int countRotateFrames;
+        int count = 0;
         Action rotation;
-
         Point pointerPosition;
-
-        ButtonState btstate = ButtonState.Zero;
-
-        Texture2D texture;
 
         public Merlim() : base(640, 480, GraphicsMode.Default, "Merlin", GameWindowFlags.Default, DisplayDevice.Default, 2, 1, GraphicsContextFlags.Debug)
         {
             body = new Body(Color.Red, Color.Black);
             painel = new Painel();
-            light = new Light();
-           
+            light = new Light();           
             camera = new Camera();
             shellGame = new ShellGame(this);
             ticTacToeGame = new TicTacToeGame(this);
@@ -48,14 +44,13 @@ namespace ConsoleApplication
             Keyboard.KeyDown += new EventHandler<KeyboardKeyEventArgs>(Keyboard_KeyDown);
             Mouse.ButtonDown += new EventHandler<MouseButtonEventArgs>(Mouse_KeyDown);
 
-            mouseClick = false;
-            keyboardCountEvent = 0;
+            updateDraw = true;
+            mouseClick = false;            
             rotation = null;
+            numberRotateFrames = 30;
+            countRotateFrames = 0;
 
             pointerPosition = new Point();
-
-           
-           
         }
 
         public int numbOfButtons()
@@ -68,11 +63,8 @@ namespace ConsoleApplication
             if (position <= painel.buttons.Length && position >= 0)
             {
                 painel.buttons[position].changeState(buttonState);
-            }
-            else
-            {
-                
-            }
+                updateDraw = true;
+            }           
         }
 
         public void resetButton(int position)
@@ -80,11 +72,9 @@ namespace ConsoleApplication
             if (position <= painel.buttons.Length && position >= 0)
             {
                 painel.buttons[position].changeState(ButtonState.Zero);
+                updateDraw = true;
             }
-            else
-            {
-                
-            }
+            
         }
 
         public void paintAllButtons(ButtonState buttonstate)
@@ -93,7 +83,7 @@ namespace ConsoleApplication
             {
                 painel.buttons[i].changeState(buttonstate);
             }
-
+            updateDraw = true;
         }
 
         public void resetAllButtons()
@@ -102,7 +92,7 @@ namespace ConsoleApplication
             {
                 painel.buttons[i].changeState(ButtonState.Zero);
             }
-          
+            updateDraw = true;
         }
 
         void Keyboard_KeyDown(object sender, KeyboardKeyEventArgs e)
@@ -114,96 +104,78 @@ namespace ConsoleApplication
                 case Key.Escape:
                     Exit();
                     break;
-
-                case Key.Left:                   
+                case Key.Left:
                     keyboardCameraMove = true;
                     rotation = camera.cameraRotationYB;
                     break;
-
-                case Key.Right:                   
+                case Key.Right:
                     keyboardCameraMove = true;
                     rotation = camera.cameraRotationYA;
                     break;
-
                 case Key.Up:
                     keyboardCameraMove = true;
-                  rotation = camera.cameraRotationXA;
+                    rotation = camera.cameraRotationXA;
                     break;
-
                 case Key.Down:
                     rotation = camera.cameraRotationXB;
                     keyboardCameraMove = true;
                     break;
-                case Key.PageUp:
+                case Key.Z:
                     rotation = camera.zoomIn;
                     keyboardCameraMove = true;
                     break;
-                case Key.PageDown:
+                case Key.X:
                     rotation = camera.zoomOut;
                     keyboardCameraMove = true;
                     break;
-                case Key.Q:
+                case Key.A:
+                    rotation = camera.cameraRotationZA;
+                    keyboardCameraMove = true;
+                    break;
+                case Key.S:
+                    rotation = camera.cameraRotationZB;
+                    keyboardCameraMove = true;
+                    break;
+                case Key.Number1:
                     merlimState = MerlimState.GameOne;
                     shellGame.play();
                     break;
-                case Key.W:
+                case Key.Number2:
                     merlimState = MerlimState.GameTwo;
                     ticTacToeGame.play();
                     break;
                 case Key.Space:
                     merlimState = MerlimState.Start;
                     resetGames();
-                    break;
-                case Key.T:
-                    GL.Translate(0, 1, 0);
-                    break;
-                case Key.R:
-                    GL.Rotate(1, 1, 0, 0);
-                    break;
-                case Key.N:
-                    GL.Enable(EnableCap.Texture2D);
-                    break;
-                case Key.M:
-                    GL.Disable(EnableCap.Texture2D);
-                    break;
+                    break;                
                 default:
                     break;
             }
-
-
         }
-       
+               
         void Mouse_KeyDown(object sender, MouseButtonEventArgs e)
         {
             if (e.IsPressed == true)
             {
                 pointerPosition = e.Position;
                 mouseClick = true;
-                light.disableLight();
+                updateDraw = true;
+                //light.disableLight();
             }
         }
 
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
             base.OnUpdateFrame(e);
-         
-            if (keyboardCameraMove == true && keyboardCountEvent < 30)
-            {
-                rotation.Invoke();
-                keyboardCountEvent++;
-            }
-            else
-            {
-                keyboardCameraMove = false;
-                keyboardCountEvent = 0;
-            }
+
+            rotateEvent();            
            
         }
 
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-            //texture = ContentPipe.LoadTexture("tiles.jpg");
+           
             light.lightLoad();
 
             float aspect = this.Width / Convert.ToSingle(this.Height);
@@ -233,63 +205,98 @@ namespace ConsoleApplication
             GL.Viewport(0, 0, Width, Height);
             matrixProjection = Matrix4.CreatePerspectiveFieldOfView((float)Math.PI / 4, Width / (float)Height, 1f, 100f);
          
-           
-
         }
 
         protected override void OnRenderFrame(FrameEventArgs e)
         {
             base.OnRenderFrame(e);
-            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-           
-            
+
+            rollingGame();
+
+            if (updateDraw == true)
+            {
+                drawEvent();
+                updateDraw = false;
+            }
+            mouseClickEvent();
+
+
+        }
+        
+        private void rotateEvent()
+        {
+            if (keyboardCameraMove == true && countRotateFrames < numberRotateFrames)
+            {
+                rotation.Invoke();
+                countRotateFrames++;
+                updateDraw = true;
+
+            }
+            else
+            {
+                keyboardCameraMove = false;
+                countRotateFrames = 0;
+            }
+
+        }
+
+        private void rollingGame()
+        {
             if (merlimState == MerlimState.GameOne && shellGame.isRunning())
             {
                 shellGame.play();
+                
             }
+           
+        }
 
-            draw();
-
-            if (mouseClick == true) 
+        private void mouseClickEvent()
+        {
+            if (mouseClick == true)
             {
+                SwapBuffers();
                 Color cor = getColor(pointerPosition);
 
                 if (isValidButtonColor(cor))
                 {
                     if (merlimState == MerlimState.GameOne && shellGame.isRunning() == false)
-                    {     
+                    {
                         shellGame.setAnswer(getButtonFromColor(cor));
                     }
-                    else if(merlimState == MerlimState.GameTwo)
+                    else if (merlimState == MerlimState.GameTwo)
                     {
                         ticTacToeGame.setMove(getButtonFromColor(cor));
                     }
+                    updateDraw = true;
                 }
-                SwapBuffers();
-                light.enableLigh();
+               // SwapBuffers();
+                //light.enableLigh();
                 
             }
             mouseClick = false;
+        }
 
+        private void drawEvent()
+        {
+            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
-            /*
-            if (keyboardCameraMove == true && keyboardCountEvent < 60)
+            if (mouseClick == true)
             {
-                rotation.Invoke();
-                keyboardCountEvent++;
+                light.disableLight();
             }
             else
             {
-                keyboardCameraMove = false;
-                keyboardCountEvent = 0;
+                light.enableLigh();
             }
-            */
-            
+
+            draw();
+
             SwapBuffers();
-
-
+            Console.WriteLine("draw number "+(++count));
+            
+            
         }
-
+             
         public void resetGames()
         {
             shellGame.reset();
@@ -301,27 +308,7 @@ namespace ConsoleApplication
             painel.buildPainel();
 
         }
-        /*
-        public void draw2()
-        {
-
-            GL.BindTexture(TextureTarget.Texture2D, texture.ID);
-            GL.Begin(PrimitiveType.Triangles);
-
-            GL.Color3(Color.Red);
-
-            GL.TexCoord2(0, 0);
-            GL.Vertex3(10, 0, 0);
-
-            GL.TexCoord2(1, 0);
-            GL.Vertex3(0, 10, 0);
-
-            GL.TexCoord2(1, 1);
-            GL.Vertex3(0, 0, 10);
-
-            GL.End();
-        }
-        */
+              
         public void selectActionFromClick()
         {
             shellGame.play();
