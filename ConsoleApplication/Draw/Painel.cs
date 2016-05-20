@@ -14,7 +14,7 @@ namespace ConsoleApplication
         public Button[] buttons;
         public Color[] colors;
         public Position[] buttonsPosition;
-        //Texture2D texture;
+        
 
         public Painel()
         {
@@ -31,6 +31,8 @@ namespace ConsoleApplication
 
         public void buildPainel()
         {
+            GL.Disable(EnableCap.Texture2D);
+
             for (int i = 0; i < buttons.Length; i++)
             {
                 Vector3 norm = new Vector3();
@@ -40,21 +42,21 @@ namespace ConsoleApplication
                 double calx, calz;
                 for (double j = 0; j < 10; j += 0.0007)
                 {
-                    //GL.BindTexture(TextureTarget.Texture1D, texture.ID);
+                    
                     GL.LineWidth(2f);
                     GL.Begin(PrimitiveType.Lines);
                     GL.Color3(buttons[i].color);
                     GL.Normal3(norm);
                     calx = Math.Cos(j) + buttons[i].position.x;
                     calz = Math.Sin(j) + buttons[i].position.z;
-                   // GL.TexCoord1(0);
-                    GL.Vertex3(buttons[i].position.x, buttons[i].position.y, buttons[i].position.z);
-                  //  GL.TexCoord1(1);
+                  
+                    GL.Vertex3(buttons[i].position.x, buttons[i].position.y, buttons[i].position.z);                 
                     GL.Vertex3(calx, buttons[i].position.y, calz);
                     GL.End();
                 }
 
             }
+            GL.Enable(EnableCap.Texture2D);
         }
 
         private Color[] getVectorColor()

@@ -11,7 +11,7 @@ namespace ConsoleApplication
         static void Main(string[] args)
         {
             Merlim merlim = new Merlim();
-            merlim.Run(200,200);
+            merlim.Run(60,60);
         }
     }
 }

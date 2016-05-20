@@ -21,7 +21,7 @@ namespace ConsoleApplication
             GL.Enable(EnableCap.PointSmooth);
 
             
-
+            
 
             float[] light_ambient = { 0.2f, 0.2f, 0.2f, 1.0f };
             float[] light_diffuse = { 1.0f, 1.0f, 1.0f, 1.0f };

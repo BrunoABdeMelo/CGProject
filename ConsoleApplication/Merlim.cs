@@ -40,7 +40,7 @@ namespace ConsoleApplication
             painel = new Painel();
             light = new Light();
            
-            camera = new Camera(matrixModelview);
+            camera = new Camera();
             shellGame = new ShellGame(this);
             ticTacToeGame = new TicTacToeGame(this);
             merlimState = MerlimState.Start;
@@ -94,15 +94,6 @@ namespace ConsoleApplication
                 painel.buttons[i].changeState(buttonstate);
             }
 
-            /*
-            Painel temp = new Painel();
-            for(int i = 0; i < painel.buttons.Length; i++)
-            {
-                temp.buttons[i].changeState(buttonstate);
-            }
-
-            painel = temp;
-            */
         }
 
         public void resetAllButtons()
@@ -111,9 +102,7 @@ namespace ConsoleApplication
             {
                 painel.buttons[i].changeState(ButtonState.Zero);
             }
-            /*
-            painel = new Painel();
-            */
+          
         }
 
         void Keyboard_KeyDown(object sender, KeyboardKeyEventArgs e)
@@ -126,31 +115,31 @@ namespace ConsoleApplication
                     Exit();
                     break;
 
-                case Key.Left:
+                case Key.Left:                   
                     keyboardCameraMove = true;
-                    rotation = camera.cameraRotationXZ2;
+                    rotation = camera.cameraRotationYB;
                     break;
 
-                case Key.Right:
+                case Key.Right:                   
                     keyboardCameraMove = true;
-                    rotation = camera.cameraRotationXZ1;
+                    rotation = camera.cameraRotationYA;
                     break;
 
                 case Key.Up:
                     keyboardCameraMove = true;
-                    rotation = camera.ZoomIn;
+                  rotation = camera.cameraRotationXA;
                     break;
 
                 case Key.Down:
-                    rotation = camera.ZoomOut;
+                    rotation = camera.cameraRotationXB;
                     keyboardCameraMove = true;
                     break;
                 case Key.PageUp:
-                    rotation = camera.up;
+                    rotation = camera.zoomIn;
                     keyboardCameraMove = true;
                     break;
                 case Key.PageDown:
-                    rotation = camera.down;
+                    rotation = camera.zoomOut;
                     keyboardCameraMove = true;
                     break;
                 case Key.Q:
@@ -183,7 +172,7 @@ namespace ConsoleApplication
 
 
         }
-
+       
         void Mouse_KeyDown(object sender, MouseButtonEventArgs e)
         {
             if (e.IsPressed == true)
@@ -197,6 +186,18 @@ namespace ConsoleApplication
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
             base.OnUpdateFrame(e);
+         
+            if (keyboardCameraMove == true && keyboardCountEvent < 30)
+            {
+                rotation.Invoke();
+                keyboardCountEvent++;
+            }
+            else
+            {
+                keyboardCameraMove = false;
+                keyboardCountEvent = 0;
+            }
+           
         }
 
         protected override void OnLoad(EventArgs e)
@@ -204,13 +205,6 @@ namespace ConsoleApplication
             base.OnLoad(e);
             //texture = ContentPipe.LoadTexture("tiles.jpg");
             light.lightLoad();
-
-        }
-
-        protected override void OnResize(EventArgs e)
-        {
-            base.OnResize(e);
-            
 
             float aspect = this.Width / Convert.ToSingle(this.Height);
             matrixProjection = Matrix4.CreatePerspectiveFieldOfView(MathHelper.PiOver4, aspect, 0.1f, 1000f);
@@ -222,15 +216,25 @@ namespace ConsoleApplication
             GL.LoadIdentity();
 
 
-           Vector3 m_eye = new Vector3(0f, 0, 25);
-           Vector3 target = new Vector3(0f, 0f, 0f);
-           Vector3 up = new Vector3(0f, 1f, 0f);
+            Vector3 m_eye = new Vector3(0f, 0, 25);
+            Vector3 target = new Vector3(0f, 0f, 0f);
+            Vector3 up = new Vector3(0f, 1f, 0f);
 
-           matrixProjection = Matrix4.LookAt(m_eye,target, up);
+            matrixProjection = Matrix4.LookAt(m_eye, target, up);
 
-           GL.LoadMatrix(ref matrixProjection);
+            GL.LoadMatrix(ref matrixProjection);
+
+        }
+
+        protected override void OnResize(EventArgs e)
+        {
+            base.OnResize(e);
+         
+            GL.Viewport(0, 0, Width, Height);
+            matrixProjection = Matrix4.CreatePerspectiveFieldOfView((float)Math.PI / 4, Width / (float)Height, 1f, 100f);
+         
            
-           
+
         }
 
         protected override void OnRenderFrame(FrameEventArgs e)
@@ -238,12 +242,6 @@ namespace ConsoleApplication
             base.OnRenderFrame(e);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
            
-            
-
-           
-
-
-
             
             if (merlimState == MerlimState.GameOne && shellGame.isRunning())
             {
@@ -274,8 +272,8 @@ namespace ConsoleApplication
             mouseClick = false;
 
 
-
-            if (keyboardCameraMove == true && keyboardCountEvent < 15)
+            /*
+            if (keyboardCameraMove == true && keyboardCountEvent < 60)
             {
                 rotation.Invoke();
                 keyboardCountEvent++;
@@ -285,7 +283,7 @@ namespace ConsoleApplication
                 keyboardCameraMove = false;
                 keyboardCountEvent = 0;
             }
-
+            */
             
             SwapBuffers();
 

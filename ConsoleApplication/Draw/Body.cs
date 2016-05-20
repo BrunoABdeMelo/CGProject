@@ -30,9 +30,9 @@ namespace ConsoleApplication
             setButtonColors();
             colorNow = 0;
             this.sideColor = sideColor;
-            this.lineColor = lineColor;           
-           
-            texture =  ContentPipe.LoadTexture("tiles.jpg");
+            this.lineColor = lineColor;
+            this.sideColor = Color.White;
+            texture =  ContentPipe.LoadTexture("heman.jpg");
 
         }
 
