@@ -6,17 +6,18 @@ using System.Drawing;
 using OpenTK.Graphics.OpenGL;
 
 
+
 namespace ConsoleApplication
 {
     public enum MerlimState { GameTwo, GameOne, Start };
 
     class Merlim : GameWindow, IPlataform
     {
-        Matrix4 matrixProjection, matrixModelview;
+        Matrix4 matrixProjection, matrixModelview,cameraMatrix;
         Body body;
         Painel painel;
         Light light;
-        Texture texture;
+        
         Camera camera;
         ShellGame shellGame;
         TicTacToeGame ticTacToeGame;
@@ -31,14 +32,15 @@ namespace ConsoleApplication
 
         ButtonState btstate = ButtonState.Zero;
 
+        Texture2D texture;
 
         public Merlim() : base(640, 480, GraphicsMode.Default, "Merlin", GameWindowFlags.Default, DisplayDevice.Default, 2, 1, GraphicsContextFlags.Debug)
         {
             body = new Body(Color.Red, Color.Black);
             painel = new Painel();
             light = new Light();
-            texture = new Texture();
-            camera = new Camera(matrixModelview);
+           
+            camera = new Camera();
             shellGame = new ShellGame(this);
             ticTacToeGame = new TicTacToeGame(this);
             merlimState = MerlimState.Start;
@@ -51,12 +53,16 @@ namespace ConsoleApplication
             rotation = null;
 
             pointerPosition = new Point();
+
+           
+           
         }
 
         public int numbOfButtons()
         {
             return painel.buttons.Length;
         }
+
         public void paintButton(int position, ButtonState buttonState)
         {
             if (position <= painel.buttons.Length && position >= 0)
@@ -88,15 +94,6 @@ namespace ConsoleApplication
                 painel.buttons[i].changeState(buttonstate);
             }
 
-            /*
-            Painel temp = new Painel();
-            for(int i = 0; i < painel.buttons.Length; i++)
-            {
-                temp.buttons[i].changeState(buttonstate);
-            }
-
-            painel = temp;
-            */
         }
 
         public void resetAllButtons()
@@ -105,9 +102,7 @@ namespace ConsoleApplication
             {
                 painel.buttons[i].changeState(ButtonState.Zero);
             }
-            /*
-            painel = new Painel();
-            */
+          
         }
 
         void Keyboard_KeyDown(object sender, KeyboardKeyEventArgs e)
@@ -120,31 +115,31 @@ namespace ConsoleApplication
                     Exit();
                     break;
 
-                case Key.Left:
+                case Key.Left:                   
                     keyboardCameraMove = true;
-                    rotation = camera.cameraRotationXZ2;
+                    rotation = camera.cameraRotationYB;
                     break;
 
-                case Key.Right:
+                case Key.Right:                   
                     keyboardCameraMove = true;
-                    rotation = camera.cameraRotationXZ1;
+                    rotation = camera.cameraRotationYA;
                     break;
 
                 case Key.Up:
                     keyboardCameraMove = true;
-                    rotation = camera.ZoomIn;
+                  rotation = camera.cameraRotationXA;
                     break;
 
                 case Key.Down:
-                    rotation = camera.ZoomOut;
+                    rotation = camera.cameraRotationXB;
                     keyboardCameraMove = true;
                     break;
                 case Key.PageUp:
-                    rotation = camera.up;
+                    rotation = camera.zoomIn;
                     keyboardCameraMove = true;
                     break;
                 case Key.PageDown:
-                    rotation = camera.down;
+                    rotation = camera.zoomOut;
                     keyboardCameraMove = true;
                     break;
                 case Key.Q:
@@ -159,13 +154,25 @@ namespace ConsoleApplication
                     merlimState = MerlimState.Start;
                     resetGames();
                     break;
+                case Key.T:
+                    GL.Translate(0, 1, 0);
+                    break;
+                case Key.R:
+                    GL.Rotate(1, 1, 0, 0);
+                    break;
+                case Key.N:
+                    GL.Enable(EnableCap.Texture2D);
+                    break;
+                case Key.M:
+                    GL.Disable(EnableCap.Texture2D);
+                    break;
                 default:
                     break;
             }
 
 
         }
-
+       
         void Mouse_KeyDown(object sender, MouseButtonEventArgs e)
         {
             if (e.IsPressed == true)
@@ -178,29 +185,64 @@ namespace ConsoleApplication
 
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
-
+            base.OnUpdateFrame(e);
+         
+            if (keyboardCameraMove == true && keyboardCountEvent < 30)
+            {
+                rotation.Invoke();
+                keyboardCountEvent++;
+            }
+            else
+            {
+                keyboardCameraMove = false;
+                keyboardCountEvent = 0;
+            }
+           
         }
 
         protected override void OnLoad(EventArgs e)
         {
+            base.OnLoad(e);
+            //texture = ContentPipe.LoadTexture("tiles.jpg");
             light.lightLoad();
+
+            float aspect = this.Width / Convert.ToSingle(this.Height);
+            matrixProjection = Matrix4.CreatePerspectiveFieldOfView(MathHelper.PiOver4, aspect, 0.1f, 1000f);
+
+            GL.Viewport(0, 0, this.Width, this.Height);
+            GL.MatrixMode(MatrixMode.Projection);
+            GL.LoadMatrix(ref matrixProjection);
+            GL.MatrixMode(MatrixMode.Modelview);
+            GL.LoadIdentity();
+
+
+            Vector3 m_eye = new Vector3(0f, 0, 25);
+            Vector3 target = new Vector3(0f, 0f, 0f);
+            Vector3 up = new Vector3(0f, 1f, 0f);
+
+            matrixProjection = Matrix4.LookAt(m_eye, target, up);
+
+            GL.LoadMatrix(ref matrixProjection);
 
         }
 
         protected override void OnResize(EventArgs e)
         {
+            base.OnResize(e);
+         
             GL.Viewport(0, 0, Width, Height);
             matrixProjection = Matrix4.CreatePerspectiveFieldOfView((float)Math.PI / 4, Width / (float)Height, 1f, 100f);
-            GL.MatrixMode(MatrixMode.Projection);
-            GL.LoadMatrix(ref matrixProjection);
+         
+           
+
         }
 
         protected override void OnRenderFrame(FrameEventArgs e)
         {
+            base.OnRenderFrame(e);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-
-            camera.cameraRender();
-
+           
+            
             if (merlimState == MerlimState.GameOne && shellGame.isRunning())
             {
                 shellGame.play();
@@ -230,8 +272,8 @@ namespace ConsoleApplication
             mouseClick = false;
 
 
-
-            if (keyboardCameraMove == true && keyboardCountEvent < 10)
+            /*
+            if (keyboardCameraMove == true && keyboardCountEvent < 60)
             {
                 rotation.Invoke();
                 keyboardCountEvent++;
@@ -241,8 +283,8 @@ namespace ConsoleApplication
                 keyboardCameraMove = false;
                 keyboardCountEvent = 0;
             }
-
-
+            */
+            
             SwapBuffers();
 
 
@@ -259,7 +301,27 @@ namespace ConsoleApplication
             painel.buildPainel();
 
         }
+        /*
+        public void draw2()
+        {
 
+            GL.BindTexture(TextureTarget.Texture2D, texture.ID);
+            GL.Begin(PrimitiveType.Triangles);
+
+            GL.Color3(Color.Red);
+
+            GL.TexCoord2(0, 0);
+            GL.Vertex3(10, 0, 0);
+
+            GL.TexCoord2(1, 0);
+            GL.Vertex3(0, 10, 0);
+
+            GL.TexCoord2(1, 1);
+            GL.Vertex3(0, 0, 10);
+
+            GL.End();
+        }
+        */
         public void selectActionFromClick()
         {
             shellGame.play();
@@ -312,7 +374,7 @@ namespace ConsoleApplication
             int g = color.G;
             int b = color.B;
 
-            Color result = Color.Black;
+            Color result = Color.CornflowerBlue;
 
             if (Color.Red.A == a && Color.Red.R == r && Color.Red.G == g && Color.Red.B == b)
             {
