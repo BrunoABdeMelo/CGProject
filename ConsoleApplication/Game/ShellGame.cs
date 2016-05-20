@@ -4,16 +4,15 @@ using System;
 namespace ConsoleApplication
 {
     public enum ShellGameState { Zero, One, Two, Three };
-    class ShellGame
+
+    public class ShellGame
     {
-        IPlataform plataform;
+        private IPlataform plataform;
         public ShellGameState state;
-        int countLoopStateOne;
-        int answer;
-        int countFrame = 0;
-        int actionperFrame = 0;
-
-
+        private int countLoopStateOne;
+        private int answer;
+        private int countFrame = 0;
+        private int actionperFrame = 0;
 
         public ShellGame(IPlataform plataform)
         {
@@ -34,11 +33,7 @@ namespace ConsoleApplication
             else if (state == ShellGameState.Two)
             {
                 shellGameTwo();
-            }
-            else
-            {
-                // erro
-            }
+            }           
         }
 
         public bool isRunning()
@@ -69,7 +64,6 @@ namespace ConsoleApplication
             answer = getRandomPainelNumber();
             plataform.paintButton(answer, ButtonState.One);
             state = ShellGameState.Two;
-            Console.WriteLine(answer);
         }
 
         private void shellGameTwo()
@@ -90,8 +84,7 @@ namespace ConsoleApplication
             }else
             {
                 countFrame++;
-            }
-           
+            }           
         }
 
         public void setAnswer(int button)
@@ -101,19 +94,13 @@ namespace ConsoleApplication
                 if (button == answer)
                 {
                     plataform.paintAllButtons(ButtonState.One);
-                    Console.WriteLine("one win");
-                    Console.WriteLine(button);
                 }
                 else
                 {
-                    plataform.paintAllButtons(ButtonState.Two);
-                    Console.WriteLine("one lose");
-                    Console.WriteLine(button);
+                    plataform.paintAllButtons(ButtonState.Two);                   
                 }
             }
-
             state = ShellGameState.Zero;
-
         }
 
         private int getRandomPainelNumber()

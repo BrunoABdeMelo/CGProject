@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 
 namespace ConsoleApplication
 {
-    enum ButtonState { Zero, One, Two };
+    public enum ButtonState { Zero, One, Two };
 
     public enum Player { ONE, TWO};
-    interface IPlataform
+
+    public interface IPlataform
     {
         int numbOfButtons();
         void paintButton(int position, ButtonState buttonstate);

@@ -10,26 +10,26 @@ using OpenTK.Graphics.OpenGL;
 namespace ConsoleApplication
 {
     public enum MerlimState { GameTwo, GameOne, Start };
-
-    class Merlim : GameWindow, IPlataform
+    
+    public class Merlim : GameWindow, IPlataform
     {
-        Matrix4 matrixProjection;
-        Body body;
-        Painel painel;
-        Light light;        
-        Camera camera;
-        ShellGame shellGame;
-        TicTacToeGame ticTacToeGame;
-        MerlimState merlimState;
+        private Matrix4 matrixProjection;
+        private Body body;
+        private Painel painel;
+        private Light light;
+        private Camera camera;
+        private ShellGame shellGame;
+        private TicTacToeGame ticTacToeGame;
+        private MerlimState merlimState;
 
-        bool updateDraw;
-        bool mouseClick;
-        bool keyboardCameraMove;
-        int numberRotateFrames;
-        int countRotateFrames;
-        int count = 0;
-        Action rotation;
-        Point pointerPosition;
+        private bool updateDraw;
+        private bool mouseClick;
+        private bool keyboardCameraMove;
+        private int numberRotateFrames;
+        private int countRotateFrames;
+        private int count = 0;
+        private Action rotation;
+        private Point pointerPosition;
 
         public Merlim() : base(640, 480, GraphicsMode.Default, "Merlin", GameWindowFlags.Default, DisplayDevice.Default, 2, 1, GraphicsContextFlags.Debug)
         {
@@ -53,6 +53,7 @@ namespace ConsoleApplication
             pointerPosition = new Point();
         }
 
+        // Interface
         public int numbOfButtons()
         {
             return painel.buttons.Length;
@@ -94,13 +95,13 @@ namespace ConsoleApplication
             }
             updateDraw = true;
         }
+        //--------------------------------//
 
-        void Keyboard_KeyDown(object sender, KeyboardKeyEventArgs e)
+        // Events
+        private void Keyboard_KeyDown(object sender, KeyboardKeyEventArgs e)
         {
-
             switch (e.Key)
             {
-
                 case Key.Escape:
                     Exit();
                     break;
@@ -152,24 +153,24 @@ namespace ConsoleApplication
                     break;
             }
         }
-               
-        void Mouse_KeyDown(object sender, MouseButtonEventArgs e)
+
+        private void Mouse_KeyDown(object sender, MouseButtonEventArgs e)
         {
             if (e.IsPressed == true)
             {
                 pointerPosition = e.Position;
                 mouseClick = true;
-                updateDraw = true;
-                //light.disableLight();
+                updateDraw = true;                
             }
         }
+        //--------------------------------//
 
+        // GameWindow Override
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
             base.OnUpdateFrame(e);
 
-            rotateEvent();            
-           
+            rotateEvent();         
         }
 
         protected override void OnLoad(EventArgs e)
@@ -187,15 +188,12 @@ namespace ConsoleApplication
             GL.MatrixMode(MatrixMode.Modelview);
             GL.LoadIdentity();
 
-
             Vector3 m_eye = new Vector3(0f, 0, 25);
             Vector3 target = new Vector3(0f, 0f, 0f);
             Vector3 up = new Vector3(0f, 1f, 0f);
 
             matrixProjection = Matrix4.LookAt(m_eye, target, up);
-
             GL.LoadMatrix(ref matrixProjection);
-
         }
 
         protected override void OnResize(EventArgs e)
@@ -203,15 +201,14 @@ namespace ConsoleApplication
             base.OnResize(e);
          
             GL.Viewport(0, 0, Width, Height);
-            matrixProjection = Matrix4.CreatePerspectiveFieldOfView((float)Math.PI / 4, Width / (float)Height, 1f, 100f);
-         
+            matrixProjection = Matrix4.CreatePerspectiveFieldOfView((float)Math.PI / 4, Width / (float)Height, 1f, 100f);         
         }
 
         protected override void OnRenderFrame(FrameEventArgs e)
         {
             base.OnRenderFrame(e);
 
-            rollingGame();
+            rollingGameEvent();
 
             if (updateDraw == true)
             {
@@ -219,10 +216,10 @@ namespace ConsoleApplication
                 updateDraw = false;
             }
             mouseClickEvent();
-
-
         }
-        
+        //--------------------------------//
+
+        // Actions for events
         private void rotateEvent()
         {
             if (keyboardCameraMove == true && countRotateFrames < numberRotateFrames)
@@ -230,24 +227,20 @@ namespace ConsoleApplication
                 rotation.Invoke();
                 countRotateFrames++;
                 updateDraw = true;
-
             }
             else
             {
                 keyboardCameraMove = false;
                 countRotateFrames = 0;
             }
-
         }
 
-        private void rollingGame()
+        private void rollingGameEvent()
         {
             if (merlimState == MerlimState.GameOne && shellGame.isRunning())
             {
-                shellGame.play();
-                
-            }
-           
+                shellGame.play();                
+            }           
         }
 
         private void mouseClickEvent()
@@ -266,12 +259,8 @@ namespace ConsoleApplication
                     else if (merlimState == MerlimState.GameTwo)
                     {
                         ticTacToeGame.setMove(getButtonFromColor(cor));
-                    }
-                    updateDraw = true;
+                    }                    
                 }
-               // SwapBuffers();
-                //light.enableLigh();
-                
             }
             mouseClick = false;
         }
@@ -290,55 +279,34 @@ namespace ConsoleApplication
             }
 
             draw();
-
             SwapBuffers();
-            Console.WriteLine("draw number "+(++count));
-            
-            
-        }
-             
-        public void resetGames()
-        {
-            shellGame.reset();
+            Console.WriteLine("draw number "+(++count));    
         }
 
-        public void draw()
+        private void draw()
         {
             body.buildBody();
             painel.buildPainel();
-
         }
-              
-        public void selectActionFromClick()
+        //--------------------------------//
+
+        // States,Checks,Parsers,Validation
+        private void resetGames()
         {
-            shellGame.play();
-            /*
-            paintAllButtons(btstate);
-            btstate = switchButtonZeroOne(btstate);
-            */
-            /*
-           Color cor = getColor(pointerPosition);
-           int button = getButtonFromColor(cor);
-           paintButton(button, ButtonState.One);
-           Console.WriteLine(cor);
-           */
+            shellGame.reset();
         }
-
-        public ButtonState switchButtonZeroOne(ButtonState buttonState)
+        
+        private ButtonState switchButtonZeroOne(ButtonState buttonState)
         {
             if (buttonState == ButtonState.Zero)
             {
                 return ButtonState.One;
             }
-
             return ButtonState.Zero;
         }
 
         private Color getColor(Point point)
         {
-
-
-
             byte[] color = new byte[1024];
             int[] viewport = new int[4];
 
@@ -347,15 +315,11 @@ namespace ConsoleApplication
             Color pixelColor = Color.FromArgb(color[0], color[1], color[2]);
             pixelColor = parseToKnowColor(pixelColor);
 
-
-
             return pixelColor;
-
         }
 
         private Color parseToKnowColor(Color color)
         {
-
             int a = color.A;
             int r = color.R;
             int g = color.G;
@@ -365,92 +329,61 @@ namespace ConsoleApplication
 
             if (Color.Red.A == a && Color.Red.R == r && Color.Red.G == g && Color.Red.B == b)
             {
-
                 result = Color.Red;
-
             }
             else if (Color.Khaki.A == a && Color.Khaki.R == r && Color.Khaki.G == g && Color.Khaki.B == b)
             {
-
                 result = Color.Khaki;
-
             }
             else if (Color.WhiteSmoke.A == a && Color.WhiteSmoke.R == r && Color.WhiteSmoke.G == g && Color.WhiteSmoke.B == b)
             {
-
                 result = Color.WhiteSmoke;
-
             }
             else if (Color.Orange.A == a && Color.Orange.R == r && Color.Orange.G == g && Color.Orange.B == b)
             {
-
                 result = Color.Orange;
-
             }
             else if (Color.Yellow.A == a && Color.Yellow.R == r && Color.Yellow.G == g && Color.Yellow.B == b)
             {
-
                 result = Color.Yellow;
-
             }
             else if (Color.Green.A == a && Color.Green.R == r && Color.Green.G == g && Color.Green.B == b)
             {
-
                 result = Color.Green;
-
             }
             else if (Color.Blue.A == a && Color.Blue.R == r && Color.Blue.G == g && Color.Blue.B == b)
             {
-
                 result = Color.Blue;
-
             }
             else if (Color.Purple.A == a && Color.Purple.R == r && Color.Purple.G == g && Color.Purple.B == b)
             {
-
                 result = Color.Purple;
-
             }
             else if (Color.Pink.A == a && Color.Pink.R == r && Color.Pink.G == g && Color.Pink.B == b)
             {
-
                 result = Color.Pink;
-
             }
             else if (Color.Gray.A == a && Color.Gray.R == r && Color.Gray.G == g && Color.Gray.B == b)
             {
-
                 result = Color.Gray;
-
             }
             else if (Color.Brown.A == a && Color.Brown.R == r && Color.Brown.G == g && Color.Brown.B == b)
             {
-
                 result = Color.Brown;
-
             }
             else if (Color.Cyan.A == a && Color.Cyan.R == r && Color.Cyan.G == g && Color.Cyan.B == b)
             {
-
                 result = Color.Cyan;
-
             }
             else if (Color.Lime.A == a && Color.Lime.R == r && Color.Lime.G == g && Color.Lime.B == b)
             {
-
                 result = Color.Lime;
-
             }
             else if (Color.Magenta.A == a && Color.Magenta.R == r && Color.Magenta.G == g && Color.Magenta.B == b)
             {
-
                 result = Color.Magenta;
-
             }
-
-
             return result;
-
         }
 
         private int getButtonFromColor(Color color)
@@ -480,8 +413,8 @@ namespace ConsoleApplication
                     }
                 }
             }
-
             return false;
         }
+        //--------------------------------//
     }
 }

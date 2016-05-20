@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ConsoleApplication
+﻿namespace ConsoleApplication
 {
-    class Texture2D
+    public class Texture2D
     {
         private int id;
         private int width, height;

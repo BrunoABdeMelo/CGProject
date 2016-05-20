@@ -3,7 +3,7 @@ using OpenTK.Graphics.OpenGL;
 
 namespace ConsoleApplication
 {
-    class Light
+    public class Light
     {
         public void lightLoad()
         {
@@ -16,12 +16,7 @@ namespace ConsoleApplication
             GL.Enable(EnableCap.Lighting);
             GL.Enable(EnableCap.ColorMaterial);
             GL.ShadeModel(ShadingModel.Flat);
-            GL.Enable(EnableCap.Texture2D);
-            GL.Enable(EnableCap.Blend);
-            GL.Enable(EnableCap.PointSmooth);
-
-            
-            
+            GL.Enable(EnableCap.Texture2D);            
 
             float[] light_ambient = { 0.2f, 0.2f, 0.2f, 1.0f };
             float[] light_diffuse = { 1.0f, 1.0f, 1.0f, 1.0f };
@@ -32,11 +27,7 @@ namespace ConsoleApplication
             GL.Light(LightName.Light0, LightParameter.Position, light_position);
             GL.Light(LightName.Light0, LightParameter.Ambient, light_ambient);
             GL.Light(LightName.Light0, LightParameter.Diffuse, light_diffuse);
-            GL.Light(LightName.Light0, LightParameter.Specular, light_specular);
-
-           
-            
-            
+            GL.Light(LightName.Light0, LightParameter.Specular, light_specular);                        
         }
 
         public void enableLigh()
@@ -46,22 +37,14 @@ namespace ConsoleApplication
             GL.Enable(EnableCap.Light0);
             GL.Enable(EnableCap.Normalize);
             GL.Enable(EnableCap.ColorMaterial);
-            
-
-
-
         }
 
         public void disableLight()
         {
-
-            
             GL.Disable(EnableCap.Lighting);
             GL.Disable(EnableCap.Light0);
             GL.Disable(EnableCap.Normalize);
             GL.Disable(EnableCap.ColorMaterial);
-            
-
         }
     }
 }

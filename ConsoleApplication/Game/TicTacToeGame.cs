@@ -4,11 +4,11 @@ using System;
 
 namespace ConsoleApplication
 {
-    class TicTacToeGame
+    public class TicTacToeGame
     {
-        IPlataform plataform;
-        Player player;
-        int[] matrix;
+        private IPlataform plataform;
+        private Player player;
+        private int[] matrix;
 
         public TicTacToeGame(IPlataform plataform)
         {
@@ -58,6 +58,7 @@ namespace ConsoleApplication
             }
             return ButtonState.Two;
         }
+
         public void play()
         {
             reset();
@@ -108,14 +109,11 @@ namespace ConsoleApplication
             {
                 return false;
             }
-
             return true; 
-
         }
-        public void setMove(int button)
-        {
 
-            Console.WriteLine(button);
+        public void setMove(int button)
+        {           
             if (isValidButton(button) == true)
             {
                 matrix[(button-1)] = getNumberByPlayer();
@@ -127,10 +125,8 @@ namespace ConsoleApplication
                 else
                 {
                     player = changePlayer();
-
                 }
-            }
-           
+            }           
         }
     }
 }

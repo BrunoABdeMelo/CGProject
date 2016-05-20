@@ -1,37 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Drawing;
+﻿using System.Drawing;
+
 namespace ConsoleApplication
 {
-    
-
-    class Button
+    public class Button
     {
         public Color color;
         public Color baseColor;
         public Position position;
-        public double raio;
-        public ButtonState buttonState;
+        public double raio;      
 
         public Button(Position position, double raio, Color color)
         {
             this.position = position;
             this.raio = raio;
             this.color = color;
-            baseColor = color;
-            this.buttonState = ButtonState.Zero;
+            baseColor = color;           
         }
 
         public void changeState(ButtonState state)
         {
-
             if (state == ButtonState.One)
             {
                 color = Color.Lime;
-
             }
             else if (state == ButtonState.Two)
             {
@@ -40,7 +30,6 @@ namespace ConsoleApplication
             else
             {
                 color = baseColor;
-
             }
         }
     }
