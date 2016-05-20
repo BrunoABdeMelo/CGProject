@@ -13,7 +13,7 @@ namespace ConsoleApplication
         private Color sideColor;
         private Color lineColor;        
         private Texture2D texture;
-
+        private string textureName;
         public Body(Color sideColor, Color lineColor)
         {
             bodyVertex = startVertex();
@@ -22,7 +22,32 @@ namespace ConsoleApplication
             this.sideColor = sideColor;
             this.lineColor = lineColor;
             this.sideColor = Color.White;
-            texture =  ContentPipe.LoadTexture("heman.jpg");
+            textureName = "tiles.jpg";
+            texture =  ContentPipe.LoadTexture(textureName);
+        }
+
+        public void changeTexture(int number)
+        {
+            if (number == 0 && !textureName.Equals("tiles.jpg"))
+            {
+                textureName = "tiles.jpg";
+                texture = ContentPipe.LoadTexture(textureName);
+
+            }
+            else if(number == 1 && !textureName.Equals("heman.jpg")){
+                textureName = "heman.jpg";
+                texture = ContentPipe.LoadTexture(textureName);
+            }
+            else if(number == 2 && !textureName.Equals("italo.jpg"))
+            {
+                textureName = "italo.jpg";
+                texture = ContentPipe.LoadTexture(textureName);
+            }
+            else
+            {
+
+            }
+          
         }
 
         private void setButtonColors()

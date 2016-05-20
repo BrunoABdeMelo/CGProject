@@ -30,6 +30,7 @@ namespace ConsoleApplication
         private int count = 0;
         private Action rotation;
         private Point pointerPosition;
+        private Microsoft.VisualBasic.Devices.Audio audio;
 
         public Merlim() : base(640, 480, GraphicsMode.Default, "Merlin", GameWindowFlags.Default, DisplayDevice.Default, 2, 1, GraphicsContextFlags.Debug)
         {
@@ -51,6 +52,8 @@ namespace ConsoleApplication
             countRotateFrames = 0;
 
             pointerPosition = new Point();
+
+            audio = new Microsoft.VisualBasic.Devices.Audio();
         }
 
         // Interface
@@ -148,7 +151,27 @@ namespace ConsoleApplication
                 case Key.Space:
                     merlimState = MerlimState.Start;
                     resetGames();
-                    break;                
+                    break;
+                case Key.H:
+                    string path1 = "Content/isayhey.wav";
+                    audio.Play(path1);                    
+                    body.changeTexture(1);
+                    updateDraw = true;
+                    break;
+                case Key.N:
+                    audio.Stop();
+                    body.changeTexture(0);
+                    updateDraw = true;
+                    break;
+                case Key.I:
+                    
+                    string path2 = "Content/italoSong.wav";
+                    audio.Play(path2);
+                    body.changeTexture(2);
+                    updateDraw = true;
+                    
+                    break;
+                    
                 default:
                     break;
             }
