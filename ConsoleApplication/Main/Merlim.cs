@@ -154,7 +154,7 @@ namespace ConsoleApplication
                     break;
                 case Key.H:
                     string path1 = "Content/isayhey.wav";
-                    audio.Play(path1);                    
+                    audio.Play(path1);                                       
                     body.changeTexture(1);
                     updateDraw = true;
                     break;
@@ -163,15 +163,12 @@ namespace ConsoleApplication
                     body.changeTexture(0);
                     updateDraw = true;
                     break;
-                case Key.I:
-                    
+                case Key.I:                    
                     string path2 = "Content/italoSong.wav";
                     audio.Play(path2);
                     body.changeTexture(2);
-                    updateDraw = true;
-                    
-                    break;
-                    
+                    updateDraw = true;                    
+                    break;                    
                 default:
                     break;
             }
@@ -201,9 +198,8 @@ namespace ConsoleApplication
             base.OnLoad(e);
            
             light.lightLoad();
-
-            float aspect = this.Width / Convert.ToSingle(this.Height);
-            matrixProjection = Matrix4.CreatePerspectiveFieldOfView(MathHelper.PiOver4, aspect, 0.1f, 1000f);
+           
+            matrixProjection = Matrix4.CreatePerspectiveFieldOfView((float)Math.PI / 4, Width / (float)Height, 1f, 100f);
 
             GL.Viewport(0, 0, this.Width, this.Height);
             GL.MatrixMode(MatrixMode.Projection);
@@ -224,7 +220,8 @@ namespace ConsoleApplication
             base.OnResize(e);
          
             GL.Viewport(0, 0, Width, Height);
-            matrixProjection = Matrix4.CreatePerspectiveFieldOfView((float)Math.PI / 4, Width / (float)Height, 1f, 100f);         
+            matrixProjection = Matrix4.CreatePerspectiveFieldOfView((float)Math.PI / 4, Width / (float)Height, 1f, 100f);
+            updateDraw = true;     
         }
 
         protected override void OnRenderFrame(FrameEventArgs e)

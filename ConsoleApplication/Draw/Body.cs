@@ -14,6 +14,7 @@ namespace ConsoleApplication
         private Color lineColor;        
         private Texture2D texture;
         private string textureName;
+
         public Body(Color sideColor, Color lineColor)
         {
             bodyVertex = startVertex();
