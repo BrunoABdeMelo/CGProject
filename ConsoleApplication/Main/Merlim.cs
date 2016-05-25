@@ -10,7 +10,7 @@ using OpenTK.Graphics.OpenGL;
 namespace ConsoleApplication
 {
     public enum MerlimState { GameTwo, GameOne, Start };
-    
+
     public class Merlim : GameWindow, IPlataform
     {
         private Matrix4 matrixProjection;
@@ -31,12 +31,13 @@ namespace ConsoleApplication
         private Action rotation;
         private Point pointerPosition;
         private Microsoft.VisualBasic.Devices.Audio audio;
+        int key = 1;
 
         public Merlim() : base(640, 480, GraphicsMode.Default, "Merlin", GameWindowFlags.Default, DisplayDevice.Default, 2, 1, GraphicsContextFlags.Debug)
         {
             body = new Body(Color.Red, Color.Black);
             painel = new Painel();
-            light = new Light();           
+            light = new Light();
             camera = new Camera();
             shellGame = new ShellGame(this);
             ticTacToeGame = new TicTacToeGame(this);
@@ -46,7 +47,7 @@ namespace ConsoleApplication
             Mouse.ButtonDown += new EventHandler<MouseButtonEventArgs>(Mouse_KeyDown);
 
             updateDraw = true;
-            mouseClick = false;            
+            mouseClick = false;
             rotation = null;
             numberRotateFrames = 30;
             countRotateFrames = 0;
@@ -68,7 +69,7 @@ namespace ConsoleApplication
             {
                 painel.buttons[position].changeState(buttonState);
                 updateDraw = true;
-            }           
+            }
         }
 
         public void resetButton(int position)
@@ -78,7 +79,7 @@ namespace ConsoleApplication
                 painel.buttons[position].changeState(ButtonState.Zero);
                 updateDraw = true;
             }
-            
+
         }
 
         public void paintAllButtons(ButtonState buttonstate)
@@ -103,6 +104,12 @@ namespace ConsoleApplication
         // Events
         private void Keyboard_KeyDown(object sender, KeyboardKeyEventArgs e)
         {
+
+
+            if (key == 2)
+            {
+                key = 2;
+            }
             switch (e.Key)
             {
                 case Key.Escape:
@@ -154,7 +161,7 @@ namespace ConsoleApplication
                     break;
                 case Key.H:
                     string path1 = "Content/isayhey.wav";
-                    audio.Play(path1);                                       
+                    audio.Play(path1);
                     body.changeTexture(1);
                     updateDraw = true;
                     break;
@@ -163,15 +170,16 @@ namespace ConsoleApplication
                     body.changeTexture(0);
                     updateDraw = true;
                     break;
-                case Key.I:                    
+                case Key.I:
                     string path2 = "Content/italoSong.wav";
                     audio.Play(path2);
                     body.changeTexture(2);
-                    updateDraw = true;                    
-                    break;                    
+                    updateDraw = true;
+                    break;
                 default:
                     break;
             }
+            key++;
         }
 
         private void Mouse_KeyDown(object sender, MouseButtonEventArgs e)
@@ -180,7 +188,7 @@ namespace ConsoleApplication
             {
                 pointerPosition = e.Position;
                 mouseClick = true;
-                updateDraw = true;                
+                updateDraw = true;
             }
         }
         //--------------------------------//
@@ -190,15 +198,15 @@ namespace ConsoleApplication
         {
             base.OnUpdateFrame(e);
 
-            rotateEvent();         
+            rotateEvent();
         }
 
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-           
+
             light.lightLoad();
-           
+
             matrixProjection = Matrix4.CreatePerspectiveFieldOfView((float)Math.PI / 4, Width / (float)Height, 1f, 100f);
 
             GL.Viewport(0, 0, this.Width, this.Height);
@@ -218,10 +226,10 @@ namespace ConsoleApplication
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
-         
+
             GL.Viewport(0, 0, Width, Height);
             matrixProjection = Matrix4.CreatePerspectiveFieldOfView((float)Math.PI / 4, Width / (float)Height, 1f, 100f);
-            updateDraw = true;     
+            updateDraw = true;
         }
 
         protected override void OnRenderFrame(FrameEventArgs e)
@@ -232,10 +240,10 @@ namespace ConsoleApplication
 
             if (updateDraw == true)
             {
-                drawEvent();
-                updateDraw = false;
+                drawEvent();             
             }
-            mouseClickEvent();
+          
+
         }
         //--------------------------------//
 
@@ -259,30 +267,25 @@ namespace ConsoleApplication
         {
             if (merlimState == MerlimState.GameOne && shellGame.isRunning())
             {
-                shellGame.play();                
-            }           
+                shellGame.play();
+            }
         }
 
         private void mouseClickEvent()
         {
-            if (mouseClick == true)
-            {
-                SwapBuffers();
-                Color cor = getColor(pointerPosition);
+            Color cor = getColor(pointerPosition);
 
-                if (isValidButtonColor(cor))
+            if (isValidButtonColor(cor))
+            {
+                if (merlimState == MerlimState.GameOne && shellGame.isRunning() == false)
                 {
-                    if (merlimState == MerlimState.GameOne && shellGame.isRunning() == false)
-                    {
-                        shellGame.setAnswer(getButtonFromColor(cor));
-                    }
-                    else if (merlimState == MerlimState.GameTwo)
-                    {
-                        ticTacToeGame.setMove(getButtonFromColor(cor));
-                    }                    
+                    shellGame.setAnswer(getButtonFromColor(cor));
+                }
+                else if (merlimState == MerlimState.GameTwo)
+                {
+                    ticTacToeGame.setMove(getButtonFromColor(cor));
                 }
             }
-            mouseClick = false;
         }
 
         private void drawEvent()
@@ -292,15 +295,16 @@ namespace ConsoleApplication
             if (mouseClick == true)
             {
                 light.disableLight();
-            }
-            else
-            {
+                draw();
+                mouseClickEvent();
+                GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
                 light.enableLigh();
-            }
-
+                mouseClick = false;
+            }           
+            
             draw();
-            SwapBuffers();
-            Console.WriteLine("draw number "+(++count));    
+            updateDraw = false;
+            SwapBuffers();          
         }
 
         private void draw()
@@ -315,7 +319,7 @@ namespace ConsoleApplication
         {
             shellGame.reset();
         }
-        
+
         private ButtonState switchButtonZeroOne(ButtonState buttonState)
         {
             if (buttonState == ButtonState.Zero)
@@ -417,7 +421,7 @@ namespace ConsoleApplication
                         return i;
                     }
                 }
-            }            
+            }
             return -1;
         }
 
@@ -429,7 +433,7 @@ namespace ConsoleApplication
                 {
                     if (painel.buttons[i].color == color)
                     {
-                        return true; 
+                        return true;
                     }
                 }
             }
