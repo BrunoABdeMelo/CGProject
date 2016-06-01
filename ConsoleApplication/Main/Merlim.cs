@@ -33,6 +33,8 @@ namespace ConsoleApplication
         private Microsoft.VisualBasic.Devices.Audio audio;
         int key = 1;
 
+        private bool random = true;
+
         public Merlim() : base(640, 480, GraphicsMode.Default, "Merlin", GameWindowFlags.Default, DisplayDevice.Default, 2, 1, GraphicsContextFlags.Debug)
         {
             body = new Body(Color.Red, Color.Black);
@@ -147,6 +149,20 @@ namespace ConsoleApplication
                     rotation = camera.cameraRotationZB;
                     keyboardCameraMove = true;
                     break;
+                case Key.V:
+                    if(random == true)
+                    {
+                        rotation = camera.mode1;
+                        random = false;
+                    }
+                    else
+                    {
+                        rotation = camera.mode2;
+                        random = true;
+                    }
+                    keyboardCameraMove = true;
+                    break;            
+                    
                 case Key.Number1:
                     merlimState = MerlimState.GameOne;
                     shellGame.play();
