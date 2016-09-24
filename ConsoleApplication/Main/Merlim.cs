@@ -59,7 +59,7 @@ namespace ConsoleApplication
             audio = new Microsoft.VisualBasic.Devices.Audio();
         }
 
-        // Interface
+        #region Interface
         public int numbOfButtons()
         {
             return painel.buttons.Length;
@@ -101,9 +101,9 @@ namespace ConsoleApplication
             }
             updateDraw = true;
         }
-        //--------------------------------//
+        #endregion
 
-        // Events
+        #region Events
         private void Keyboard_KeyDown(object sender, KeyboardKeyEventArgs e)
         {
 
@@ -207,9 +207,9 @@ namespace ConsoleApplication
                 updateDraw = true;
             }
         }
-        //--------------------------------//
+        #endregion
 
-        // GameWindow Override
+        #region GameWindow Override
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
             base.OnUpdateFrame(e);
@@ -261,9 +261,9 @@ namespace ConsoleApplication
           
 
         }
-        //--------------------------------//
+        #endregion
 
-        // Actions for events
+        #region Actions for events
         private void rotateEvent()
         {
             if (keyboardCameraMove == true && countRotateFrames < numberRotateFrames)
@@ -328,9 +328,9 @@ namespace ConsoleApplication
             body.buildBody();
             painel.buildPainel();
         }
-        //--------------------------------//
+        #endregion-------------------------------//
 
-        // States,Checks,Parsers,Validation
+        #region States,Checks,Parsers,Validation
         private void resetGames()
         {
             shellGame.reset();
@@ -455,6 +455,6 @@ namespace ConsoleApplication
             }
             return false;
         }
-        //--------------------------------//
+        #endregion
     }
 }
