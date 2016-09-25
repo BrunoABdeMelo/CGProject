@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ConsoleApplication.GameServiceReference;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,6 +12,8 @@ namespace ConsoleApplication
         static void Main(string[] args)
         {
             Merlim merlim = new Merlim();
+
+            GameServiceClient game = new GameServiceClient();
 
             merlim.Run();
         }

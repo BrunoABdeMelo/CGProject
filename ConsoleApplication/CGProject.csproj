@@ -48,6 +48,8 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -73,11 +75,38 @@
     <Compile Include="Game\ShellGame.cs" />
     <Compile Include="Game\TicTacToeGame.cs" />
     <Compile Include="Draw\Texture2D.cs" />
+    <Compile Include="Service References\GameServiceReference\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="OpenTK.dll.config" />
     <None Include="packages.config" />
+    <None Include="Service References\GameServiceReference\ConsoleApplication.GameServiceReference.Game.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\GameServiceReference\ConsoleApplication.GameServiceReference.Player.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\GameServiceReference\GameService.wsdl" />
+    <None Include="Service References\GameServiceReference\GameService.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\GameServiceReference\GameService1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\GameServiceReference\GameService2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\GameServiceReference\GameService3.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\GameServiceReference\GameService4.xsd">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="Content\Heman.jpg">
@@ -94,6 +123,27 @@
     </None>
     <None Include="Content\tiles.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadataStorage Include="Service References\GameServiceReference\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\GameServiceReference\GameService.disco" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\GameServiceReference\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\GameServiceReference\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\GameServiceReference\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
