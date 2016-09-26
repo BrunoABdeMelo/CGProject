@@ -14,6 +14,8 @@ namespace ConsoleApplication
             Merlim merlim = new Merlim();
 
             GameServiceClient game = new GameServiceClient();
+            game.Open();
+          
 
             merlim.Run();
         }

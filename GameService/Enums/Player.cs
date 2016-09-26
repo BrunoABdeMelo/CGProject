@@ -10,6 +10,8 @@ namespace GameService.Enums
     public enum Player
     {
         [EnumMember]
+        None = 0,
+        [EnumMember]
         One = 1,
         [EnumMember]
         Two = 2

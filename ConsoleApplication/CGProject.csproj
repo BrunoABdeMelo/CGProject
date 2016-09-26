@@ -68,6 +68,7 @@
     <Compile Include="Draw\Position.cs" />
     <Compile Include="Ambient\Light.cs" />
     <Compile Include="Game\IPlataform.cs" />
+    <Compile Include="Game\TicTacToeGameSD.cs" />
     <Compile Include="Main\Merlim.cs" />
     <Compile Include="Draw\Painel.cs" />
     <Compile Include="Main\Program.cs" />
