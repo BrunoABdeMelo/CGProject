@@ -27,11 +27,42 @@ namespace GameService.Models
         [DataMember]
         public int [] Board { get; set; }
 
-
         public Player AddPlayerInTheGame()
         {
             Player player = Player;
 
+            ResetGameIfNecessary();
+
+            if (State != GameState.WaitingPlayer)
+            {
+                throw new FaultException("Players can't join while game is running!");
+            }
+
+            UpdateWaitingStatus(player);
+
+            return player;
+        }
+
+        public void DoPlayerMovement(int position,Player player)
+        {
+            if (BoardPositionIsValid(position) && PlayerCanPlay(player))
+            {
+                Board[position] = (int)Player;
+                CheckGameOver();
+            }
+        }
+
+        #region private
+
+        private void StartGame()
+        {
+            Random random = new Random();
+            Player randomPlayer = (Player)random.Next(1,2);
+            State = GameState.Running;
+        }
+
+        private void UpdateWaitingStatus(Player player)
+        {
             switch (Player)
             {
                 case Player.One:
@@ -43,18 +74,117 @@ namespace GameService.Models
                 default:
                     break;
             }
-
-            return player;
         }
 
-        private void StartGame()
+        private void ResetGameIfNecessary()
         {
-            Random random = new Random();
-            Player randomPlayer = (Player)random.Next(1,2);
-            State = GameState.Running;
+            if (State == GameState.Finished)
+            {
+                ResetBoard();
+                Player = Player.One;
+                State = GameState.WaitingPlayer;
+            }
         }
 
+        private void ResetBoard()
+        {
+            Board.Initialize();
+        }
 
+        private bool PlayerCanPlay(Player player)
+        {
+            return player == Player && State == GameState.Running;
+        }
+
+        private bool BoardPositionIsValid(int position)
+        {
+            return PositionIsInBoardRange(position) && BoardPositionIsClear(position);
+        }
+
+        private bool PositionIsInBoardRange(int position)
+        {
+            return position >= 0 && position < Board.Length;
+        }
+
+        private bool BoardPositionIsClear(int position)
+        {
+            return Board[position] == (int)Player.None;
+        }
+
+        private void CheckGameOver()
+        {
+            if (ActualPlayerIsAWinner())
+            {
+                State = GameState.Finished;
+            }
+            else if (IsADraw())
+            {
+                State = GameState.Finished;
+                Player = Player.None;
+            }
+            else
+            {
+                ChangePlayer();
+            }
+        }
+
+        private void ChangePlayer()
+        {
+            if (Player == Player.One)
+            {
+                Player = Player.Two;
+            }
+            else
+            {
+                Player = Player.One;
+            }
+        }
+
+        private bool IsADraw()
+        {
+            return Board.All(t => t != (int)Player.None);
+        }
+
+        private bool ActualPlayerIsAWinner()
+        {
+            int p = (int)Player;
+
+            if (Board[0] == p && Board[1] == p && Board[2] == p)
+            {
+                return true;
+            }
+            else if (Board[3] == p && Board[4] == p && Board[5] == p)
+            {
+                return true;
+            }
+            else if (Board[6] == p && Board[7] == p && Board[8] == p)
+            {
+                return true;
+            }
+            else if (Board[0] == p && Board[3] == p && Board[6] == p)
+            {
+                return true;
+            }
+            else if (Board[1] == p && Board[4] == p && Board[7] == p)
+            {
+                return true;
+            }
+            else if (Board[2] == p && Board[5] == p && Board[8] == p)
+            {
+                return true;
+            }
+            else if (Board[0] == p && Board[4] == p && Board[8] == p)
+            {
+                return true;
+            }
+            else if (Board[2] == p && Board[4] == p && Board[6] == p)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        #endregion
 
     }
 }

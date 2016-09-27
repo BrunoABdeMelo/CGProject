@@ -18,6 +18,9 @@ namespace ConsoleApplication.GameServiceReference {
     public enum Player : int {
         
         [System.Runtime.Serialization.EnumMemberAttribute()]
+        None = 0,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
         One = 1,
         
         [System.Runtime.Serialization.EnumMemberAttribute()]

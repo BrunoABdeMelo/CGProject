@@ -35,7 +35,7 @@ namespace GameService
 
         public void Play(Player player, int position)
         {
-            throw new NotImplementedException();
+            _gameData.DoPlayerMovement(position,player);
         }
     }
 }
