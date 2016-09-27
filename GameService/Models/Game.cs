@@ -1,10 +1,8 @@
-﻿using GameService.Enums;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.ServiceModel;
-using System.Web;
+using GameService.Enums;
 
 namespace GameService.Models
 {
@@ -38,7 +36,7 @@ namespace GameService.Models
                 throw new FaultException("Players can't join while game is running!");
             }
 
-            UpdateWaitingStatus(player);
+            UpdateWaitingStatus();
 
             return player;
         }
@@ -58,10 +56,11 @@ namespace GameService.Models
         {
             Random random = new Random();
             Player randomPlayer = (Player)random.Next(1,2);
+            Player = randomPlayer;
             State = GameState.Running;
         }
 
-        private void UpdateWaitingStatus(Player player)
+        private void UpdateWaitingStatus()
         {
             switch (Player)
             {
@@ -70,8 +69,6 @@ namespace GameService.Models
                     break;
                 case Player.Two:
                     StartGame();
-                    break;
-                default:
                     break;
             }
         }
@@ -153,31 +150,31 @@ namespace GameService.Models
             {
                 return true;
             }
-            else if (Board[3] == p && Board[4] == p && Board[5] == p)
+            if (Board[3] == p && Board[4] == p && Board[5] == p)
             {
                 return true;
             }
-            else if (Board[6] == p && Board[7] == p && Board[8] == p)
+            if (Board[6] == p && Board[7] == p && Board[8] == p)
             {
                 return true;
             }
-            else if (Board[0] == p && Board[3] == p && Board[6] == p)
+            if (Board[0] == p && Board[3] == p && Board[6] == p)
             {
                 return true;
             }
-            else if (Board[1] == p && Board[4] == p && Board[7] == p)
+            if (Board[1] == p && Board[4] == p && Board[7] == p)
             {
                 return true;
             }
-            else if (Board[2] == p && Board[5] == p && Board[8] == p)
+            if (Board[2] == p && Board[5] == p && Board[8] == p)
             {
                 return true;
             }
-            else if (Board[0] == p && Board[4] == p && Board[8] == p)
+            if (Board[0] == p && Board[4] == p && Board[8] == p)
             {
                 return true;
             }
-            else if (Board[2] == p && Board[4] == p && Board[6] == p)
+            if (Board[2] == p && Board[4] == p && Board[6] == p)
             {
                 return true;
             }
