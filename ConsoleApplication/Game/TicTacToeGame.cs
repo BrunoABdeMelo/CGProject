@@ -1,7 +1,7 @@
 ﻿
 
 using System;
-
+using ConsoleApplication.GameServiceReference;
 namespace ConsoleApplication
 {
     public class TicTacToeGame
@@ -20,7 +20,7 @@ namespace ConsoleApplication
         private void reset()
         {
             resetMatrix();
-            player = Player.ONE;
+            player = Player.One;
             plataform.resetAllButtons();
         }
 
@@ -34,16 +34,16 @@ namespace ConsoleApplication
 
         private Player changePlayer()
         {
-            if (player == Player.ONE)
+            if (player == Player.One)
             {
-                return Player.TWO;
+                return Player.Two;
             }
-            return Player.ONE;
+            return Player.One;
         }
 
         private int getNumberByPlayer()
         {
-            if (player == Player.ONE)
+            if (player == Player.One)
             {
                 return 1;
             }
@@ -52,7 +52,7 @@ namespace ConsoleApplication
 
         private ButtonState getButtonStateByPlayer()
         {
-            if (player == Player.ONE)
+            if (player == Player.One)
             {
                 return ButtonState.One;
             }

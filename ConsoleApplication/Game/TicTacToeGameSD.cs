@@ -5,16 +5,19 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-
+using ConsoleApplication.GameServiceReference;
 
 namespace ConsoleApplication
 {
     class TicTacToeGameSD
     {
         private IPlataform plataform;
-        private GameServiceReference.Player player;
+        private Player player;
         private int[] matrix;
-        private GameServiceReference.Player playerTurn;
+        private Player playerTurn;
+        private Game gameState;
+        private bool drawFlag = false;
+        
 
         private IGameService gameService;
         public TicTacToeGameSD(IPlataform plataform)
@@ -22,12 +25,13 @@ namespace ConsoleApplication
             GameServiceClient game = new GameServiceClient();
             game.Open();
             gameService = game;
+
             player = gameService.EnterGame();
-            gameService.EnterGame();
+            //gameService.EnterGame();
             
             this.plataform = plataform;
             matrix = new int[plataform.numbOfButtons()];
-            //start();
+           
         }
 
         private void resetMatrix()
@@ -41,81 +45,116 @@ namespace ConsoleApplication
 
         private void showStartPlayer()
         {
-            if (player == GameServiceReference.Player.One)
+            if (player == Player.One)
             {
                 plataform.paintButton(0,ButtonState.One);
                 plataform.paintButton(10, ButtonState.Two);
             }
-            plataform.paintButton(0, ButtonState.Two);
-            plataform.paintButton(10, ButtonState.One);
+            else
+            {
+                plataform.paintButton(0, ButtonState.Two);
+                plataform.paintButton(10, ButtonState.One);
+            }      
         }
-
         
-
-        private GameServiceReference.Player getTurnFromService()
-        {
-            Game game = gameService.GetGameData();
-
-            if(game.Player == GameServiceReference.Player.One)
-            {
-                return GameServiceReference.Player.One;
-            }else
-            {
-                return GameServiceReference.Player.Two;
-            }
-        }
 
         public void start()
         {
             resetMatrix();
-            playerTurn = getTurnFromService();
             plataform.resetAllButtons();
+            gameState = gameService.GetGameData();
             showStartPlayer();
             
+        }
+
+        public bool isFinished()
+        {
+            gameState = gameService.GetGameData();
+            if(gameState.State == GameState.Finished)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public bool isMyTurn()
+        {
+            if (gameState.Player == player && drawFlag == true)
+            {
+                drawFlag = false;
+                return true;
+            }
+            return false;
         }
                 
         public void firstPlayerMove(int button)
         {
-            if (isValidButton(button) == true && playerTurn == player)
+            gameState = gameService.GetGameData();
+            if (isValidButton(button) == true && gameState.State == GameState.Running && gameState.Player == player)
             {
-                plataform.paintButton(button, getButtonStateByPlayer());
-                gameService.Play(player, button);// service.play(button,player)
-                playerTurn = opositePlayer();
-                 //new thread => isMyturn() ou callback
-                // secondPlayerMove();
+                plataform.paintButton(button, getButtonStateByPlayer(player));
+                gameService.Play(player, button-1);
+                if(isFinished() == false)
+                {
+                    playerTurn = opositePlayer();
+                    Thread secondThread = new Thread(secondPlayerMove);
+                    secondThread.Start();
+                }        
             }
         }
 
-        private GameServiceReference.Player opositePlayer()
+        private Player opositePlayer()
         {
-            if(player == GameServiceReference.Player.One)
+            if(player == Player.One)
             {
-                return GameServiceReference.Player.Two;
+                return Player.Two;
             }
-            return GameServiceReference.Player.One;
+            return Player.One;
+        }
+
+        private void endOfTheGame()
+        {
+
         }
 
         private void secondPlayerMove()
         {
-            // int serviceMatrix = serviceMatrix.getMatrix();
-
-            // int diference = moveDiference(serviceMatrix,matrix)
-
-            // plataform.paintButton(diference, opositePlayer());
-
-            // playerTurn = player;
+            waitingSecondPlayer();          
+            drawFlag = true;
         }
-        private bool isMyTurn()
+
+
+        public void finish()
         {
-            //while( ask service == false){thread.sleep(2000);}
-                
-            return true;
+
+            if(gameState.Player != Player.None)
+            {
+                plataform.paintAllButtons(getButtonStateByPlayer(gameState.Player));
+            }        
+           
+        }
+
+        public void updateImage()
+        {
+            if (gameState.LastMovement.HasValue)
+            {
+                int position = gameState.LastMovement.Value;
+                plataform.paintButton(position+1, getButtonStateByPlayer(opositePlayer()));
+            }
+        }
+
+        private void waitingSecondPlayer()
+        {            
+            do
+            {
+                gameState = gameService.GetGameData();
+            } while (gameState.Player != player);
         }
         
 
-        private ButtonState getButtonStateByPlayer()
+        private ButtonState getButtonStateByPlayer(Player player)
         {
-            if (player == GameServiceReference.Player.One)
+            if (player == Player.One)
             {
                 return ButtonState.One;
             }

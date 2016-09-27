@@ -25,6 +25,9 @@ namespace GameService.Models
         [DataMember]
         public int [] Board { get; set; }
 
+        [DataMember]
+        public int? LastMovement { get; set; }
+
         public Player AddPlayerInTheGame()
         {
             Player player = Player;
@@ -46,6 +49,7 @@ namespace GameService.Models
             if (BoardPositionIsValid(position) && PlayerCanPlay(player))
             {
                 Board[position] = (int)Player;
+                LastMovement = position;
                 CheckGameOver();
             }
         }
@@ -78,6 +82,7 @@ namespace GameService.Models
             if (State == GameState.Finished)
             {
                 ResetBoard();
+                LastMovement = null;
                 Player = Player.One;
                 State = GameState.WaitingPlayer;
             }

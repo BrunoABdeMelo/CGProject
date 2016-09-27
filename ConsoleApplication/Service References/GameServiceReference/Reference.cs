@@ -40,6 +40,9 @@ namespace ConsoleApplication.GameServiceReference {
         private int[] BoardField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Nullable<int> LastMovementField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private ConsoleApplication.GameServiceReference.Player PlayerField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
@@ -64,6 +67,19 @@ namespace ConsoleApplication.GameServiceReference {
                 if ((object.ReferenceEquals(this.BoardField, value) != true)) {
                     this.BoardField = value;
                     this.RaisePropertyChanged("Board");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Nullable<int> LastMovement {
+            get {
+                return this.LastMovementField;
+            }
+            set {
+                if ((this.LastMovementField.Equals(value) != true)) {
+                    this.LastMovementField = value;
+                    this.RaisePropertyChanged("LastMovement");
                 }
             }
         }
@@ -139,6 +155,12 @@ namespace ConsoleApplication.GameServiceReference {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IGameService/Play", ReplyAction="http://tempuri.org/IGameService/PlayResponse")]
         System.Threading.Tasks.Task PlayAsync(ConsoleApplication.GameServiceReference.Player player, int position);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IGameService/ResetGame", ReplyAction="http://tempuri.org/IGameService/ResetGameResponse")]
+        void ResetGame();
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IGameService/ResetGame", ReplyAction="http://tempuri.org/IGameService/ResetGameResponse")]
+        System.Threading.Tasks.Task ResetGameAsync();
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -190,6 +212,14 @@ namespace ConsoleApplication.GameServiceReference {
         
         public System.Threading.Tasks.Task PlayAsync(ConsoleApplication.GameServiceReference.Player player, int position) {
             return base.Channel.PlayAsync(player, position);
+        }
+        
+        public void ResetGame() {
+            base.Channel.ResetGame();
+        }
+        
+        public System.Threading.Tasks.Task ResetGameAsync() {
+            return base.Channel.ResetGameAsync();
         }
     }
 }

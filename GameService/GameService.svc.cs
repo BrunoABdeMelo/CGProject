@@ -37,5 +37,10 @@ namespace GameService
         {
             _gameData.DoPlayerMovement(position,player);
         }
+
+        public void ResetGame()
+        {
+            _gameData = new Game();
+        }
     }
 }

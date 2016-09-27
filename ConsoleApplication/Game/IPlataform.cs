@@ -8,7 +8,6 @@ namespace ConsoleApplication
 {
     public enum ButtonState { Zero, One, Two };
 
-    public enum Player { ONE, TWO, NONE};
 
     public interface IPlataform
     {

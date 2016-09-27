@@ -27,6 +27,12 @@
   <wsdl:message name="IGameService_Play_OutputMessage">
     <wsdl:part name="parameters" element="tns:PlayResponse" />
   </wsdl:message>
+  <wsdl:message name="IGameService_ResetGame_InputMessage">
+    <wsdl:part name="parameters" element="tns:ResetGame" />
+  </wsdl:message>
+  <wsdl:message name="IGameService_ResetGame_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ResetGameResponse" />
+  </wsdl:message>
   <wsdl:portType name="IGameService">
     <wsdl:operation name="EnterGame">
       <wsdl:input wsaw:Action="http://tempuri.org/IGameService/EnterGame" message="tns:IGameService_EnterGame_InputMessage" />
@@ -39,6 +45,10 @@
     <wsdl:operation name="Play">
       <wsdl:input wsaw:Action="http://tempuri.org/IGameService/Play" message="tns:IGameService_Play_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IGameService/PlayResponse" message="tns:IGameService_Play_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ResetGame">
+      <wsdl:input wsaw:Action="http://tempuri.org/IGameService/ResetGame" message="tns:IGameService_ResetGame_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IGameService/ResetGameResponse" message="tns:IGameService_ResetGame_OutputMessage" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="BasicHttpBinding_IGameService" type="tns:IGameService">
@@ -63,6 +73,15 @@
     </wsdl:operation>
     <wsdl:operation name="Play">
       <soap:operation soapAction="http://tempuri.org/IGameService/Play" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ResetGame">
+      <soap:operation soapAction="http://tempuri.org/IGameService/ResetGame" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>

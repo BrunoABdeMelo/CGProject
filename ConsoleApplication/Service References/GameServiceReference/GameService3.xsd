@@ -39,4 +39,14 @@
       <xs:sequence />
     </xs:complexType>
   </xs:element>
+  <xs:element name="ResetGame">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ResetGameResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
 </xs:schema>

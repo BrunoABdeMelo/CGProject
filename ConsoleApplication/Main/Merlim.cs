@@ -285,6 +285,14 @@ namespace ConsoleApplication
             {
                 shellGame.play();
             }
+            else if(merlimState == MerlimState.GameTwo && ticTacToeGameSD.isFinished())
+            {
+                ticTacToeGameSD.finish();
+            }
+            else if(merlimState == MerlimState.GameTwo && ticTacToeGameSD.isMyTurn())
+            {
+                ticTacToeGameSD.updateImage();
+            }
         }
 
         private void mouseClickEvent()

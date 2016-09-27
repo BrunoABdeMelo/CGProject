@@ -20,5 +20,8 @@ namespace GameService
 
         [OperationContract]
         void Play(Player player, int position);
+
+        [OperationContract]
+        void ResetGame();
     }
 }
