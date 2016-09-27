@@ -19,7 +19,7 @@ namespace ConsoleApplication
         private Light light;
         private Camera camera;
         private ShellGame shellGame;
-        private TicTacToeGame ticTacToeGame;
+        private TicTacToeGameSD ticTacToeGameSD;
         private MerlimState merlimState;
 
         private bool updateDraw;
@@ -42,7 +42,7 @@ namespace ConsoleApplication
             light = new Light();
             camera = new Camera();
             shellGame = new ShellGame(this);
-            ticTacToeGame = new TicTacToeGame(this);
+            ticTacToeGameSD = new TicTacToeGameSD(this);
             merlimState = MerlimState.Start;
 
             Keyboard.KeyDown += new EventHandler<KeyboardKeyEventArgs>(Keyboard_KeyDown);
@@ -169,7 +169,7 @@ namespace ConsoleApplication
                     break;
                 case Key.Number2:
                     merlimState = MerlimState.GameTwo;
-                    ticTacToeGame.play();
+                    ticTacToeGameSD.start();
                     break;
                 case Key.Space:
                     merlimState = MerlimState.Start;
@@ -299,7 +299,7 @@ namespace ConsoleApplication
                 }
                 else if (merlimState == MerlimState.GameTwo)
                 {
-                    ticTacToeGame.setMove(getButtonFromColor(cor));
+                    ticTacToeGameSD.firstPlayerMove(getButtonFromColor(cor));
                 }
             }
         }
