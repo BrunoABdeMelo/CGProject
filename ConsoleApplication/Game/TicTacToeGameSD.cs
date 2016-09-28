@@ -17,21 +17,25 @@ namespace ConsoleApplication
         private Player playerTurn;
         private Game gameState;
         private bool drawFlag = false;
-        
-
         private IGameService gameService;
+        Thread secondThread;
+
+        GameServiceClient game;
+
         public TicTacToeGameSD(IPlataform plataform)
         {
-            GameServiceClient game = new GameServiceClient();
+            game = new GameServiceClient();
             game.Open();
             gameService = game;
 
-            player = gameService.EnterGame();
-            //gameService.EnterGame();
-            
             this.plataform = plataform;
             matrix = new int[plataform.numbOfButtons()];
            
+        }
+
+        private void openService()
+        {
+            player = gameService.EnterGame();
         }
 
         private void resetMatrix()
@@ -62,9 +66,15 @@ namespace ConsoleApplication
         {
             resetMatrix();
             plataform.resetAllButtons();
+            openService();
             gameState = gameService.GetGameData();
             showStartPlayer();
-            
+            if(player == Player.Two)
+            {
+                secondThread = new Thread(secondPlayerMove);
+                secondThread.Start();
+            }
+
         }
 
         public bool isFinished()
@@ -82,6 +92,8 @@ namespace ConsoleApplication
             if (gameState.Player == player && drawFlag == true)
             {
                 drawFlag = false;
+                // verificar isso com guri
+                secondThread.Abort();
                 return true;
             }
             return false;
@@ -97,7 +109,7 @@ namespace ConsoleApplication
                 if(isFinished() == false)
                 {
                     playerTurn = opositePlayer();
-                    Thread secondThread = new Thread(secondPlayerMove);
+                    secondThread = new Thread(secondPlayerMove);
                     secondThread.Start();
                 }        
             }
@@ -123,15 +135,13 @@ namespace ConsoleApplication
             drawFlag = true;
         }
 
-
+   
         public void finish()
         {
-
             if(gameState.Player != Player.None)
             {
                 plataform.paintAllButtons(getButtonStateByPlayer(gameState.Player));
-            }        
-           
+            }
         }
 
         public void updateImage()
