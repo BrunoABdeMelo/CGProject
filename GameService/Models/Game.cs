@@ -59,7 +59,7 @@ namespace GameService.Models
         private void StartGame()
         {
             Random random = new Random();
-            Player randomPlayer = (Player)random.Next(1,2);
+            Player randomPlayer = Player.One;
             Player = randomPlayer;
             State = GameState.Running;
         }
@@ -90,7 +90,7 @@ namespace GameService.Models
 
         private void ResetBoard()
         {
-            Board.Initialize();
+            Board = new int[9];
         }
 
         private bool PlayerCanPlay(Player player)

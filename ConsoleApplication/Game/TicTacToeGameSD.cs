@@ -1,11 +1,5 @@
 ﻿using ConsoleApplication.GameServiceReference;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
-using ConsoleApplication.GameServiceReference;
 
 namespace ConsoleApplication
 {
@@ -33,11 +27,6 @@ namespace ConsoleApplication
            
         }
 
-        private void openService()
-        {
-            player = gameService.EnterGame();
-        }
-
         private void resetMatrix()
         {
             for (int i = 0; i < matrix.Length; i++)
@@ -45,7 +34,6 @@ namespace ConsoleApplication
                 matrix[i] = 0;
             }
         }
-
 
         private void showStartPlayer()
         {
@@ -60,16 +48,57 @@ namespace ConsoleApplication
                 plataform.paintButton(10, ButtonState.One);
             }      
         }
-        
 
+        private Player opositePlayer()
+        {
+            if(player == Player.One)
+            {
+                return Player.Two;
+            }
+            return Player.One;
+        }
+        
+        private void secondPlayerMove()
+        {
+            waitingSecondPlayer();          
+            drawFlag = true;
+        }
+   
+        private void waitingSecondPlayer()
+        {            
+            do
+            {
+                gameState = gameService.GetGameData();
+            } while (gameState.Player != player);
+        }
+  
+        private ButtonState getButtonStateByPlayer(Player player)
+        {
+            if (player == Player.One)
+            {
+                return ButtonState.One;
+            }
+            return ButtonState.Two;
+        }
+
+        private bool isValidButton(int button)
+        {
+            if (button > 9 || button < 1)
+            {
+                return false;
+            }
+            return true;
+        }
+     
         public void start()
         {
+            
             resetMatrix();
             plataform.resetAllButtons();
-            openService();
+            player = gameService.EnterGame();
             gameState = gameService.GetGameData();
             showStartPlayer();
-            if(player == Player.Two)
+            if (player == Player.Two)
             {
                 secondThread = new Thread(secondPlayerMove);
                 secondThread.Start();
@@ -77,14 +106,40 @@ namespace ConsoleApplication
 
         }
 
+        public void firstPlayerMove(int button)
+        {
+            gameState = gameService.GetGameData();
+            if (isValidButton(button) == true && gameState.State == GameState.Running && gameState.Player == player)
+            {
+                plataform.paintButton(button, getButtonStateByPlayer(player));
+                gameService.Play(player, button - 1);
+                gameState = gameService.GetGameData();
+                
+                if (isFinished() == false)
+                {
+                    playerTurn = opositePlayer();
+                    secondThread = new Thread(secondPlayerMove);
+                    secondThread.Start();
+                }
+            }
+        }
+
         public bool isFinished()
         {
             gameState = gameService.GetGameData();
-            if(gameState.State == GameState.Finished)
+            if (gameState.State == GameState.Finished)
             {
                 return true;
             }
             return false;
+        }
+
+        public void finish()
+        {
+            if (gameState.Player != Player.None)
+            {
+                plataform.paintAllButtons(getButtonStateByPlayer(gameState.Player));
+            }
         }
 
         public bool isMyTurn()
@@ -98,87 +153,15 @@ namespace ConsoleApplication
             }
             return false;
         }
-                
-        public void firstPlayerMove(int button)
-        {
-            gameState = gameService.GetGameData();
-            if (isValidButton(button) == true && gameState.State == GameState.Running && gameState.Player == player)
-            {
-                plataform.paintButton(button, getButtonStateByPlayer(player));
-                gameService.Play(player, button-1);
-                if(isFinished() == false)
-                {
-                    playerTurn = opositePlayer();
-                    secondThread = new Thread(secondPlayerMove);
-                    secondThread.Start();
-                }        
-            }
-        }
-
-        private Player opositePlayer()
-        {
-            if(player == Player.One)
-            {
-                return Player.Two;
-            }
-            return Player.One;
-        }
-
-        private void endOfTheGame()
-        {
-
-        }
-
-        private void secondPlayerMove()
-        {
-            waitingSecondPlayer();          
-            drawFlag = true;
-        }
-
-   
-        public void finish()
-        {
-            if(gameState.Player != Player.None)
-            {
-                plataform.paintAllButtons(getButtonStateByPlayer(gameState.Player));
-            }
-        }
 
         public void updateImage()
         {
             if (gameState.LastMovement.HasValue)
             {
+               
                 int position = gameState.LastMovement.Value;
-                plataform.paintButton(position+1, getButtonStateByPlayer(opositePlayer()));
+                plataform.paintButton(position + 1, getButtonStateByPlayer(opositePlayer()));
             }
-        }
-
-        private void waitingSecondPlayer()
-        {            
-            do
-            {
-                gameState = gameService.GetGameData();
-            } while (gameState.Player != player);
-        }
-        
-
-        private ButtonState getButtonStateByPlayer(Player player)
-        {
-            if (player == Player.One)
-            {
-                return ButtonState.One;
-            }
-            return ButtonState.Two;
-        }
-
-
-        private bool isValidButton(int button)
-        {
-            if (button > 9 || button < 1)
-            {
-                return false;
-            }
-            return true;
         }
 
     }
